@@ -20,6 +20,16 @@ require.config({
 		dataSources: "models/dataSources",
 	},
 
+	// dataTables.bootstrap5.js asks for the core as "datatables.net", which is the
+	// npm package name. Point that at the "datatables" alias above so the file can
+	// be used as shipped rather than edited by hand. Using map instead of a second
+	// paths entry keeps it to a single module instance.
+	map: {
+		"*": {
+			"datatables.net": "datatables",
+		},
+	},
+
 	shim: {
 		underscore: {
 			exports: "_",

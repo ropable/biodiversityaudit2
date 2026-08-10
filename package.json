@@ -1,0 +1,30 @@
+{
+	"name": "biodiversityaudit2",
+	"version": "1.0.7",
+	"private": true,
+	"license": "Apache-2.0",
+	"description": "WA Biodiversity Audit Portal - static frontend served by nginx",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dbca-wa/biodiversityaudit2.git"
+	},
+	"scripts": {
+		"deps:sync": "bash scripts/sync-deps.sh",
+		"deps:update": "bun update && bun run deps:sync",
+		"deps:check": "bun outdated"
+	},
+	"dependencies": {
+		"backbone": "~1.1.2",
+		"bootstrap": "^5.3.8",
+		"datatables.net": "^2.3.8",
+		"datatables.net-bs5": "^2.3.8",
+		"jquery": "^3.7.1",
+		"jquery-ui": "^1.14.2",
+		"jquery.scrollto": "^2.1.3",
+		"leaflet": "~0.7.7",
+		"lodash": "^4.18.1",
+		"requirejs": "^2.3.8",
+		"requirejs-text": "^2.0.16",
+		"underscore": "^1.13.8"
+	}
+}

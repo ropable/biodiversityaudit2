@@ -4,6 +4,37 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-    target-branch: 'master'
+    target-branch: 'main'
     commit-message:
       prefix: '[actions] '
+
+  # Browser libraries. Dependabot only updates package.json and bun.lock - it can't
+  # run the copy script, so the files in js/lib/ and css/ won't change on its own.
+  # Before merging one of these PRs:
+  #
+  #     bun install && bun run deps:sync
+  #
+  # then commit the resulting js/lib/ and css/ changes onto the same branch.
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    target-branch: 'main'
+    commit-message:
+      prefix: '[deps] '
+    ignore:
+      # Held back on purpose - see the pinned versions table in README.md.
+      # Leaflet 1.x is a breaking API change and leaflet.ajax targets 0.7.
+      - dependency-name: 'leaflet'
+        versions: ['>=1.0.0']
+      # Backbone 1.2+ spans years of changes with no tests to catch regressions.
+      - dependency-name: 'backbone'
+        versions: ['>=1.2.0']
+      # jQuery 4 removes deprecated APIs.
+      - dependency-name: 'jquery'
+        versions: ['>=4.0.0']
+      # DataTables 3 drops jQuery. Both packages have to move together.
+      - dependency-name: 'datatables.net'
+        versions: ['>=3.0.0']
+      - dependency-name: 'datatables.net-bs5'
+        versions: ['>=3.0.0']

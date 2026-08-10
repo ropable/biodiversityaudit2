@@ -153,7 +153,7 @@ define(["jquery", "underscore", "leaflet", "leaflet_ajax", "config"], function (
 			pdfUrl = `${config.ckan.static_url}/${pdfInfo.url}`;
 		} else if (pdfInfo && pdfInfo.fallback_file) {
 			// Use local data folder (test mode or fallback)
-			pdfUrl = `../pdfs/data/${pdfInfo.fallback_file}.pdf`;
+			pdfUrl = `../data/pdfs/${pdfInfo.fallback_file}.pdf`;
 		} else {
 			// Last resort fallback to local data folder
 			pdfUrl = `../data/pdfs/sub-region-profile-reporting-tables-${subCode.toLowerCase()}.pdf`;
