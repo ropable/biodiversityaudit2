@@ -8,12 +8,15 @@ define(["underscore", "jquery", "datatables"], function (_, $, DataTable) {
 		scrollCollapse: true,
 		processing: true,
 		deferRender: true,
-		autowidth: true,
+		autoWidth: true,
 	};
 
 	function decorateTable(table) {
 		table.get_data_fields = function () {
-			return this.settings()[0]["aoColumns"].map(function (x) {
+			// DataTables 3 renamed settings.aoColumns to settings.columns.
+			var settings = this.settings()[0];
+			var columns = settings.columns || settings.aoColumns || [];
+			return columns.map(function (x) {
 				return x.data;
 			});
 		};
@@ -40,7 +43,8 @@ define(["underscore", "jquery", "datatables"], function (_, $, DataTable) {
 			var data = [];
 			if (json) {
 				if (typeof json === "string") {
-					data = $.parseJSON(json);
+					// $.parseJSON was removed in jQuery 4.
+					data = JSON.parse(json);
 				} else {
 					data = json;
 				}
@@ -66,21 +70,20 @@ define(["underscore", "jquery", "datatables"], function (_, $, DataTable) {
 		initTable: function (selector, tableOptions, columnsOptions) {
 			var options = {},
 				table;
-			$.fn.DataTable.ext.errMode = "throws"; // will throw a console error instead of an alert
+			// DataTables 3 no longer attaches itself to jQuery on load, so
+			// $.fn.DataTable only exists once jQuery is registered.
+			if (DataTable.use) {
+				DataTable.use($);
+			}
+			DataTable.ext.errMode = "throws"; // console error instead of an alert
 			$.extend(options, defaultOptions, tableOptions, {
 				columns: columnsOptions,
 			});
-			// Try both DataTables 2.x and 1.x initialization syntax
 			try {
 				table = new DataTable(selector, options);
-				console.log("DataTables 2.x initialization successful");
 			} catch (e) {
-				console.log(
-					"DataTables 2.x failed, trying 1.x syntax:",
-					e.message
-				);
+				console.log("DataTable constructor failed:", e.message);
 				table = $(selector).DataTable(options);
-				console.log("DataTables 1.x initialization successful");
 			}
 			// add some methods
 			table = decorateTable(table);

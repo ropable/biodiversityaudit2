@@ -74,7 +74,8 @@ define([
 
         render: function () {
             var columnDefs = this.columnDefs || this._buildColumnDefinitions();
-            var table = tables.initTable(this.$el.selector, {}, columnDefs);
+            // jQuery removed the .selector property in 3.0, so pass the element.
+            var table = tables.initTable(this.$el, {}, columnDefs);
             var rows = this._applyFilters();
             var json = _.map(rows, function (model) {
                 return model.toJSON();

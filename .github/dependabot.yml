@@ -22,19 +22,3 @@ updates:
     target-branch: 'main'
     commit-message:
       prefix: '[deps] '
-    ignore:
-      # Held back on purpose - see the pinned versions table in README.md.
-      # Leaflet 1.x is a breaking API change and leaflet.ajax targets 0.7.
-      - dependency-name: 'leaflet'
-        versions: ['>=1.0.0']
-      # Backbone 1.2+ spans years of changes with no tests to catch regressions.
-      - dependency-name: 'backbone'
-        versions: ['>=1.2.0']
-      # jQuery 4 removes deprecated APIs.
-      - dependency-name: 'jquery'
-        versions: ['>=4.0.0']
-      # DataTables 3 drops jQuery. Both packages have to move together.
-      - dependency-name: 'datatables.net'
-        versions: ['>=3.0.0']
-      - dependency-name: 'datatables.net-bs5'
-        versions: ['>=3.0.0']

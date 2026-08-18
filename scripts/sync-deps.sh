@@ -11,7 +11,6 @@
 # These libraries aren't on npm and are maintained by hand. Don't add them:
 #   js/lib/recline.js, js/lib/recline.dataset.js  unmaintained
 #   js/lib/csv.js, js/lib/ckan.js                 recline backends
-#   js/lib/leaflet.ajax.js, .min.js               built for the leaflet 0.7 API
 #
 set -euo pipefail
 

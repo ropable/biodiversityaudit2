@@ -147,7 +147,7 @@ table a:hover {
 }
 
 /* Stronger selectors to override DataTables CSS */
-.dataTables_wrapper table a,
+.dt-container table a,
 table.dataTable a,
 #details_content table a,
 .table a {
@@ -155,7 +155,7 @@ table.dataTable a,
 	text-decoration: none !important;
 }
 
-.dataTables_wrapper table a:hover,
+.dt-container table a:hover,
 table.dataTable a:hover,
 #details_content table a:hover,
 .table a:hover {

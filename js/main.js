@@ -8,7 +8,6 @@ require.config({
 		underscore: "lib/underscore-min",
 		backbone: "lib/backbone-min",
 		leaflet: "lib/leaflet",
-		leaflet_ajax: "lib/leaflet.ajax",
 		datatables: "lib/jquery.dataTables",
 		datatablesBootstrap: "lib/dataTables.bootstrap5",
 		recline: "lib/recline.dataset",
@@ -43,29 +42,8 @@ require.config({
 		bootstrap: {
 			deps: ["jquery"],
 		},
-		backbone: {
-			deps: ["underscore", "jquery"],
-			exports: "Backbone",
-			init: function (_, $) {
-				// Add Lodash 4 compatibility for Backbone
-				if (typeof _ !== "undefined" && !_.any) {
-					_.mixin({
-						any: _.some,
-						all: _.every,
-						contains: _.includes,
-						invoke: _.invokeMap,
-						object: _.zipObject,
-						findWhere: function (collection, properties) {
-							return _.find(collection, properties);
-						},
-						where: function (collection, properties) {
-							return _.filter(collection, properties);
-						},
-					});
-				}
-				return this.Backbone;
-			},
-		},
+		// Backbone declares its own AMD dependencies on underscore and jquery, so
+		// RequireJS ignores shim config for it and none is needed here.
 		CSVBackend: {
 			deps: ["jquery", "underscore"],
 			exports: "CSVBackend",
@@ -90,9 +68,6 @@ require.config({
 				window.Backbone = Backbone;
 				return this.recline;
 			},
-		},
-		leaflet_ajax: {
-			deps: ["leaflet"],
 		},
 		datatablesBootstrap: {
 			deps: ["datatables", "bootstrap"],

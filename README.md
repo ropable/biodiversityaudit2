@@ -53,22 +53,31 @@ Dependabot only updates `package.json` and `bun.lock` and can't run the copy scr
 so its PRs leave `js/lib/` untouched. Run `bun install && bun run deps:sync` and
 commit the result onto the same branch before merging.
 
-### Pinned versions
+Everything currently tracks the latest release, so there are no held-back versions
+and no `ignore` rules in `.github/dependabot.yml`.
 
-Held back deliberately. Please don't widen these without doing the upgrade work.
-`.github/dependabot.yml` has matching `ignore` rules.
+### Libraries maintained by hand
 
-| Package | Pin | Why |
-| --- | --- | --- |
-| `leaflet` | `~0.7.7` | 1.x is a breaking API change, and `js/lib/leaflet.ajax.js` is built for the 0.7 API. That plugin is unmaintained, so it needs replacing first. |
-| `backbone` | `~1.1.2` | Current releases are years ahead, and there are no tests to catch regressions. |
-| `jquery` | `^3.7.1` | jQuery 4 removes deprecated APIs. Needs jQuery UI compatibility checked too. |
-| `datatables.net`, `datatables.net-bs5` | `^2.3.4` | DataTables 3 drops jQuery. Both packages have to move together. |
+These aren't on npm, so the sync leaves them alone: `recline.js`,
+`recline.dataset.js`, `csv.js` and `ckan.js`. All are unmaintained upstream, and the
+last two are Recline backends that were never published separately.
 
-These aren't on npm and are maintained by hand, so the sync leaves them alone:
-`recline.js`, `recline.dataset.js`, `csv.js` and `ckan.js` (all unmaintained, and the
-last two are Recline backends that were never published separately), plus
-`leaflet.ajax.js` and its minified build.
+### Notes on the current major versions
+
+Worth knowing if something looks odd, or before upgrading further:
+
+- **jQuery 4** removed `$.parseJSON`, so `tableFacade.js` uses `JSON.parse`.
+  jQuery UI 1.14 works on jQuery 4. Note `.selector` has been gone since jQuery 3
+  and a couple of call sites still relied on it, which is why views pass elements
+  rather than selector strings.
+- **DataTables 3** renamed `settings.aoColumns` to `settings.columns`, and no longer
+  attaches itself to jQuery on load, so `tableFacade.js` calls `DataTable.use($)`
+  before touching `$.fn.DataTable`.
+- **Leaflet 1.9** replaced the 0.7 API. The `leaflet.ajax` plugin was built for 0.7
+  and is unmaintained, so `map.js` loads the region GeoJSON with `fetch` and
+  `L.geoJSON` instead. That plugin is gone from `js/lib/`.
+- **Backbone 1.6** declares its own AMD dependencies, so it needs no `shim` entry in
+  `js/main.js`.
 
 ## Docker
 

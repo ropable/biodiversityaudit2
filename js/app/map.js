@@ -1,8 +1,7 @@
-define(["jquery", "underscore", "leaflet", "leaflet_ajax", "config"], function (
+define(["jquery", "underscore", "leaflet", "config"], function (
 	$,
 	_,
 	L,
-	ajax,
 	config
 ) {
 	var ControlButton = L.Control.extend({
@@ -258,7 +257,7 @@ define(["jquery", "underscore", "leaflet", "leaflet_ajax", "config"], function (
 		//             });
 		//         }
 		//     }).addTo(map);
-		new L.GeoJSON.AJAX(ibraURL, {
+		var ibraLayer = L.geoJSON(null, {
 			style: ibraStyle,
 			onEachFeature: function (feature, layer) {
 				feature.properties.popup = buildPopup(feature.properties);
@@ -287,6 +286,25 @@ define(["jquery", "underscore", "leaflet", "leaflet_ajax", "config"], function (
 				});
 			},
 		}).addTo(map);
+
+		// Previously loaded by the leaflet.ajax plugin, which was built for the
+		// Leaflet 0.7 API and is unmaintained. Loading it here keeps the same
+		// behaviour, which was always asynchronous.
+		fetch(ibraURL)
+			.then(function (response) {
+				if (!response.ok) {
+					throw new Error(
+						"Failed to load region boundaries: " + response.status
+					);
+				}
+				return response.json();
+			})
+			.then(function (geojson) {
+				ibraLayer.addData(geojson);
+			})
+			.catch(function (error) {
+				console.error("Could not load region boundaries:", error);
+			});
 
 		// Add side-pane control
 		map.addControl(sidebarControl());
