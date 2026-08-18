@@ -39,6 +39,7 @@ define([
 		columns: [
 			{
 				data: "trend",
+				width: "250px",
 				render: function (data) {
 					return data.rendered || data;
 				},
@@ -87,73 +88,6 @@ define([
 
 		initialize: function () {},
 
-		updateT1Headers: function ($table) {
-			console.log("updateT1Headers called");
-
-			// Find the table element if not provided
-			if (!$table || $table.length === 0) {
-				$table = $("#summary_table_T1");
-			}
-
-			// Look for headers in both scroll head and main table
-			var $scrollHead = $table
-				.closest(".dataTables_scroll")
-				.find(".dataTables_scrollHead thead");
-			var $mainHead = $table.find("thead");
-
-			var $targetHead = $scrollHead.length > 0 ? $scrollHead : $mainHead;
-
-			if ($targetHead.length > 0) {
-				var $thElements = $targetHead.find("th");
-				console.log(
-					"updateT1Headers - Found th elements:",
-					$thElements.length
-				);
-
-				if ($thElements.length >= 7) {
-					console.log("updateT1Headers - Setting headers");
-
-					$thElements.eq(0).html("Trend");
-					$thElements
-						.eq(1)
-						.html(
-							'<div style="line-height: 1.1; font-size: 0.85em;"><div style="font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 2px; padding-bottom: 2px;">Threatened Flora</div><div>Number of populations</div></div>'
-						);
-					$thElements
-						.eq(2)
-						.html(
-							'<div style="line-height: 1.1; font-size: 0.85em;"><div style="font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 2px; padding-bottom: 2px;">Threatened Flora</div><div>Number of mature individuals</div></div>'
-						);
-					$thElements
-						.eq(3)
-						.html(
-							'<div style="line-height: 1.1; font-size: 0.85em;"><div style="font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 2px; padding-bottom: 2px;">Threatened Fauna</div><div>Number of populations</div></div>'
-						);
-					$thElements
-						.eq(4)
-						.html(
-							'<div style="line-height: 1.1; font-size: 0.85em;"><div style="font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 2px; padding-bottom: 2px;">Threatened Fauna</div><div>Number of mature individuals</div></div>'
-						);
-					$thElements
-						.eq(5)
-						.html(
-							'<div style="line-height: 1.1; font-size: 0.85em;"><div style="font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 2px; padding-bottom: 2px;">Threatened Ecological Communities</div><div>Number of occurrences</div></div>'
-						);
-					$thElements
-						.eq(6)
-						.html(
-							'<div style="line-height: 1.1; font-size: 0.85em;"><div style="font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 2px; padding-bottom: 2px;">Threatened Ecological Communities</div><div>Area of occupancy</div></div>'
-						);
-
-					console.log("updateT1Headers - Headers set successfully");
-					return true;
-				}
-			}
-
-			console.log("updateT1Headers - Failed to set headers");
-			return false;
-		},
-
 		render: function (parent) {
 			var child = _.template(this.getMainTemplate())({
 				parent: parent,
@@ -197,13 +131,9 @@ define([
 				destroy: true,
 				scrollX: true,
 				responsive: false,
-				autoWidth: true,
+				autoWidth: false,
 				retrieve: true,
 				ordering: false,
-				initComplete: function (settings, json) {
-					console.log("T1: Table initialization complete");
-					// DataTables 2.x automatically handles scroll body headers for width calculation
-				},
 			};
 			var buildRows = _.bind(this.buildSummaryRows, this);
 			var renderDetails = _.bind(this.renderDetails, this);

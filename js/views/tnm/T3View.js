@@ -37,6 +37,7 @@ define([
 		columns: [
 			{
 				data: "trend",
+				width: "250px",
 				render: function (data) {
 					return data.rendered || data;
 				},
