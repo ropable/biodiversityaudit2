@@ -1,21 +1,36 @@
 # syntax=docker/dockerfile:1
 
-# Stage 1: Assemble only web-servable assets into a clean directory.
-# This guarantees that repo metadata (Dockerfile, nginx.conf, README, scripts, etc.)
-# never lands in the webroot — regardless of .dockerignore contents.
+# Stage 1: Install the browser libraries and copy them into js/lib/ and css/.
+# There's no bundling - RequireJS loads them at runtime.
+FROM oven/bun:1-alpine AS deps
+WORKDIR /src
+# The bun alpine image has no bash, which sync-deps.sh needs.
+RUN apk add --no-cache bash
+# Manifests first, so the install layer caches when only app code changes.
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+COPY scripts/sync-deps.sh ./scripts/
+COPY css/ ./css/
+COPY js/ ./js/
+RUN bash scripts/sync-deps.sh
+
+# Stage 2: Assemble only web-servable assets into a clean directory, so repo
+# metadata (Dockerfile, nginx.conf, README, scripts) can't end up in the webroot
+# whatever .dockerignore says. css/ and js/ come from the deps stage; node_modules/
+# stays behind in /src.
 FROM alpine:3.20 AS assets
 ARG APP_VERSION=dev
 WORKDIR /assets
 COPY index.html .
-COPY css/ ./css/
+COPY --from=deps /src/css/ ./css/
+COPY --from=deps /src/js/ ./js/
 COPY data/ ./data/
 COPY images/ ./images/
-COPY js/ ./js/
 COPY templates/ ./templates/
 # Inject version at build time so it's available to the frontend
 RUN echo "var APP_VERSION = '${APP_VERSION}';" > ./js/version.js
 
-# Stage 2: Production nginx image with only the web assets.
+# Stage 3: Production nginx image with only the web assets.
 FROM nginxinc/nginx-unprivileged:stable-alpine
 LABEL org.opencontainers.image.authors=asi@dbca.wa.gov.au
 LABEL org.opencontainers.image.source=https://github.com/dbca-wa/biodiversityaudit2

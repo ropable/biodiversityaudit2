@@ -291,9 +291,13 @@ define([
 				"FUTURETHREATS_SPECIFY",
 				"RECOVERYPLANCOMMENCE",
 			];
-			var tableElement = this.getDetailsTableElement();
+			var compiled = _.template(detailsTemplate);
+			var table;
+			// Content has to be in place before the table element can be found,
+			// as the other detail renderers below do.
+			this.setDetailsContent(compiled({ type: "Threats", id: id }));
 			var tableView = new TableView({
-				el: tableElement.selector,
+				el: this.getDetailsTableElement(),
 				model: records,
 				fields: tableFields,
 				filters: [
@@ -303,9 +307,6 @@ define([
 					},
 				],
 			});
-			var compiled = _.template(detailsTemplate);
-			var table;
-			this.setDetailsContent(compiled({ type: "Threats", id: id }));
 			table = tableView.render();
 			// reverse order to put blank line at the end
 			table.order([0, "desc"]).draw();

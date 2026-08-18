@@ -8,5 +8,15 @@ README.md
 .vscode/
 .github/
 kustomize/
-scripts/
 docs/
+
+# The build runs its own bun install, so a local node_modules/ would only bloat
+# the context and risk pulling host-architecture files into a cross-arch build.
+node_modules/
+
+# Keep local tooling out, but let the build reach the dependency copy script.
+scripts/
+!scripts/sync-deps.sh
+
+# package.json and bun.lock are intentionally not listed - the first build stage
+# needs them. They aren't copied into the final image.

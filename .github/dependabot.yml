@@ -4,6 +4,21 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-    target-branch: 'master'
+    target-branch: 'main'
     commit-message:
       prefix: '[actions] '
+
+  # Browser libraries. Dependabot only updates package.json and bun.lock - it can't
+  # run the copy script, so the files in js/lib/ and css/ won't change on its own.
+  # Before merging one of these PRs:
+  #
+  #     bun install && bun run deps:sync
+  #
+  # then commit the resulting js/lib/ and css/ changes onto the same branch.
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    target-branch: 'main'
+    commit-message:
+      prefix: '[deps] '
